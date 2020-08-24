@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: address-service 
+  name: bank-service 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: address-service
+      app: bank-service
   template:
     metadata:
       labels:
-        app: address-service
+        app: bank-service
     spec:
       containers:
-      - name: address-service
+      - name: bank-service
         image: 102789521217.dkr.ecr.us-east-1.amazonaws.com/bank-service
         ports:
         - containerPort: 80
