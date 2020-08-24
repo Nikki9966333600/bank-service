@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: address-service 
+  name: bank-service 
   labels:
-    name: address-service   
+    name: bank-service   
 spec:
   ports:
-    - port: 8083
+    - port: 8458
   selector:
-    app: address-service
+    app: bank-service
   type: NodePort
