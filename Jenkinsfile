@@ -30,7 +30,7 @@ pipeline {
         sh 'echo entered ecr'
        withDockerRegistry(credentialsId: 'ecr:us-east-1:aws-cred', url: 'http://102789521217.dkr.ecr.us-east-1.amazonaws.com/bank-service') {
           sh 'sudo usermod -aG docker jenkins'
-          sh 'docker tag address-service:latest 102789521217.dkr.ecr.us-east-1.amazonaws.com/bank-service:latest'
+          sh 'docker tag bank-service:latest 102789521217.dkr.ecr.us-east-1.amazonaws.com/bank-service:latest'
           sh 'docker push 102789521217.dkr.ecr.us-east-1.amazonaws.com/bank-service:latest'
         } 
       }
