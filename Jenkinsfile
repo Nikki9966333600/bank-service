@@ -1,8 +1,8 @@
 pipeline {
   agent any
   tools { 
+        maven 'MAVEN_HOME'
         jdk 'JAVA_HOME'
-        maven 'Maven'
   }
   stages {
     stage('Clone repository') {
@@ -13,17 +13,35 @@ pipeline {
     }
     stage('Build') {
       steps {
-        sh 'mvn clean install'
+        sh 'mvn -B -DskipTests clean package'
+        sh 'echo $USER'
+        sh 'echo whoami'
       }
     }
     stage('Docker Build') {
       steps {
-        sh '/usr/bin/docker build -t bank-service .'
+        sh 'sudo docker build -t bank-service .'
+        sh 'echo build finished'
       }
     }
-  stage('Docker Run') {
+   
+    stage('push image to ECR'){
       steps {
-         sh 'nohup /usr/bin/docker run -t --name bank-container -p 8083:8083 bank-service &'
+        sh 'echo entered ecr'
+       withDockerRegistry(credentialsId: 'ecr:us-east-1:aws-cred', url: 'http://102789521217.dkr.ecr.us-east-1.amazonaws.com/bank-service') {
+          sh 'sudo usermod -aG docker jenkins'
+          sh 'docker tag address-service:latest 102789521217.dkr.ecr.us-east-1.amazonaws.com/bank-service:latest'
+          sh 'docker push 102789521217.dkr.ecr.us-east-1.amazonaws.com/bank-service:latest'
+        } 
+      }
+    }
+  stage('deploy to ECR') {
+      steps {
+         node('eks-master-node'){
+            checkout scm
+         sh 'kubectl apply -f deployment.yaml' 
+         sh 'kubectl apply -f service.yaml'  
+         }
       }
     } 
   }
